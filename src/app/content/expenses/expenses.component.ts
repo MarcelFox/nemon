@@ -1,5 +1,5 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 
 export interface Expenses {
@@ -44,7 +44,14 @@ const EXPENSES_DATA_2: Expenses[] = [
   styleUrl: './expenses.component.css'
 })
 export class ExpensesComponent {
-  dataSource = signal(EXPENSES_DATA)
-  dataSource2 = signal(EXPENSES_DATA_2)
+  expensesData = signal(EXPENSES_DATA)
+  bonusData = signal(EXPENSES_DATA_2)
   displayedColumns: string[] = ['name', 'value', 'description'];
+
+  totalBonus = computed(() => this.expensesData().reduce((acc: number, cur: Expenses): number => {
+    return acc + cur.value;
+  }, 0))
+  totalExpenses = computed(() => this.bonusData().reduce((acc: number, cur: Expenses): number => {
+    return acc + cur.value;
+  }, 0))
 }
