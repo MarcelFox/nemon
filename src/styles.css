@@ -1,25 +1,29 @@
 :root {
     --grid-gap: 15px;
     --global-border-radius: 10px;
-    --global-x-margin: 50px;
-    --global-top-margin: 20px;
+    --global-x-margin: 80px;
+    --global-top-margin: 30px;
     --header-margin: 25px;
 }
 
+html {
+    height: 100%;
+}
+
 body {
-    margin: 0 auto;
+    height: 100%;
+    margin: 0;
     padding: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
     background: #0f0c29;
     /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);
     /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-
     color: white;
-    font-family: Arial, Helvetica, sans-serif;
 }
+
 
 ul {
     list-style: none;
@@ -30,14 +34,15 @@ a {
 }
 
 .container {
+    padding-left: var(--global-x-margin);
+    padding-right: var(--global-x-margin);
     display: grid;
-    margin-left: var(--global-x-margin);
-    margin-right: var(--global-x-margin);
     gap: var(--grid-gap);
+    grid-template-columns: 200px 1fr 1fr 1fr;
     grid-template-areas:
-        "header header header header header"
-        "sidebar content content content content"
-        "footer footer footer footer footer"
+        "header header header header"
+        "sidebar content content content"
+        "footer footer footer footer"
 }
 
 .container #header,
@@ -49,6 +54,11 @@ a {
     box-shadow: 0px 2px 5px grey;
     border-radius: var(--global-border-radius);
     border: 1px solid white;
+}
+
+#sidebar,
+#content {
+    margin-bottom: 50px;
 }
 
 @media (max-width: 768px) {
