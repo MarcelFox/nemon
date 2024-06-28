@@ -6,33 +6,32 @@ export interface Expenses {
   id: number;
   name: string;
   value: number;
-  description: string;
 }
 
 const EXPENSES_DATA: Expenses[] = [
-  { id: 1, name: 'gasto 1', value: 10.00, description: 'gasto necessário com tal coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
-  { id: 2, name: 'gasto 2', value: 10.00, description: 'gasto necessário com outra coisa' },
+  { id: 1, name: 'gasto 1', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
+  { id: 2, name: 'gasto 2', value: 10.00 },
 ]
 
 const EXPENSES_DATA_2: Expenses[] = [
-  { id: 1, name: 'gasto 1', value: 10.00, description: 'gasto necessário com tal coisa' }
+  { id: 1, name: 'gasto 1', value: 10.00 }
 ]
 
 
@@ -46,12 +45,13 @@ const EXPENSES_DATA_2: Expenses[] = [
 export class ExpensesComponent {
   expensesData = signal(EXPENSES_DATA)
   bonusData = signal(EXPENSES_DATA_2)
-  displayedColumns: string[] = ['name', 'value', 'description'];
+  displayedColumns: string[] = ['name', 'value'];
+  displayedColumns2: string[] = ['total', 'value'];
 
-  totalBonus = computed(() => this.expensesData().reduce((acc: number, cur: Expenses): number => {
+  totalExpenses = computed(() => this.expensesData().reduce((acc: number, cur: Expenses): number => {
     return acc + cur.value;
   }, 0))
-  totalExpenses = computed(() => this.bonusData().reduce((acc: number, cur: Expenses): number => {
+  totalBonus = computed(() => this.bonusData().reduce((acc: number, cur: Expenses): number => {
     return acc + cur.value;
   }, 0))
 }
