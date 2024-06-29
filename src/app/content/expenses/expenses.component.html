@@ -1,21 +1,22 @@
 <div id="container">
     <div id="expenses-table">
         <h2>Despesas</h2>
-        <table mat-table [dataSource]="expensesData()">
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Name </th>
-                <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
-                <td mat-footer-cell *matFooterCellDef> Total </td>
-            </ng-container>
-            <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef> Value </th>
-                <td mat-cell *matCellDef="let element" click=""> {{ element.value }} <button
-                        (click)="removeElement(element.id, true)">X</button> </td>
-                <td mat-footer-cell *matFooterCellDef> {{totalExpenses() | currency}} </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+        <table matSort (matSortChange)="sortData($event, expensesData())">
+            <tr>
+                <th mat-sort-header="name">Nome</th>
+                <th mat-sort-header="value">Valor</th>
+            </tr>
+
+            @for (expense of expensesData(); track expense) {
+            <tr>
+                <td>{{expense.name}}</td>
+                <td>{{expense.value}}</td>
+                <button (click)="removeElement(expense.id, true)">X</button>
+            </tr>
+            }
+            <tr>
+                <td>Total: {{ totalExpenses() }}</td>
+            </tr>
         </table>
         <div>
             <button (click)="addElement()" style="float: right; margin: 20px;">
@@ -26,21 +27,22 @@
 
     <div id="bonus-table">
         <h2>Ganhos</h2>
-        <table mat-table [dataSource]="bonusData()">
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Name </th>
-                <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
-                <td mat-footer-cell *matFooterCellDef> Total </td>
-            </ng-container>
-            <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef> Value </th>
-                <td mat-cell *matCellDef="let element"> {{ element.value }} <button
-                        (click)="removeElement(element.id, false)">X</button> </td>
-                <td mat-footer-cell *matFooterCellDef> {{totalBonus() | currency}} </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+        <table matSort (matSortChange)="sortData($event, bonusData())">
+            <tr>
+                <th mat-sort-header="name">Nome</th>
+                <th mat-sort-header="value">Valor</th>
+            </tr>
+
+            @for (expense of bonusData(); track expense) {
+            <tr>
+                <td>{{expense.name}}</td>
+                <td>{{expense.value}}</td>
+                <button (click)="removeElement(expense.id, false)">X</button>
+            </tr>
+            }
+            <tr>
+                <td>Total: {{ totalBonus() }}</td>
+            </tr>
         </table>
         <div>
             <button (click)="addElement(false)" style="float: right; margin: 20px;">
