@@ -10,7 +10,7 @@
             <ng-container matColumnDef="value">
                 <th mat-header-cell *matHeaderCellDef> Value </th>
                 <td mat-cell *matCellDef="let element" click=""> {{ element.value }} <button
-                        (click)="removeBonus(element.id, true)">X</button> </td>
+                        (click)="removeElement(element.id, true)">X</button> </td>
                 <td mat-footer-cell *matFooterCellDef> {{totalExpenses() | currency}} </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -18,7 +18,7 @@
             <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
         </table>
         <div>
-            <button (click)="addBonus()" style="float: right; margin: 20px;">
+            <button (click)="addElement()" style="float: right; margin: 20px;">
                 add expense
             </button>
         </div>
@@ -35,7 +35,7 @@
             <ng-container matColumnDef="value">
                 <th mat-header-cell *matHeaderCellDef> Value </th>
                 <td mat-cell *matCellDef="let element"> {{ element.value }} <button
-                        (click)="removeBonus(element.id, false)">X</button> </td>
+                        (click)="removeElement(element.id, false)">X</button> </td>
                 <td mat-footer-cell *matFooterCellDef> {{totalBonus() | currency}} </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -43,7 +43,7 @@
             <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
         </table>
         <div>
-            <button (click)="addBonus(false)" style="float: right; margin: 20px;">
+            <button (click)="addElement(false)" style="float: right; margin: 20px;">
                 add bonus
             </button>
         </div>

@@ -39,7 +39,7 @@ export class ExpensesComponent {
     }, 0)
   );
 
-  addBonus(expenses: boolean = true) {
+  addElement(expenses: boolean = true) {
     expenses ? this.idExpenses.update((num) => num + 1) : this.idBonus.update((num) => num + 1);
     expenses
       ? this.expensesData.update(() => [
@@ -51,7 +51,7 @@ export class ExpensesComponent {
           { id: this.idBonus(), name: 'gasto 2', value: Math.random() * (9999 - 1) + 1 },
         ]);
   }
-  removeBonus(id: number, expenses: boolean = true) {
+  removeElement(id: number, expenses: boolean = true) {
     expenses
       ? this.expensesData.update(() => {
           return this.deleteElementById(id, this.expensesData());
