@@ -1,5 +1,6 @@
 import { CommonModule, JsonPipe } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, WritableSignal, computed, signal } from '@angular/core';
+import { NgControlStatus } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 
 export interface Expenses {
@@ -8,29 +9,8 @@ export interface Expenses {
   value: number;
 }
 
-const EXPENSES_DATA: Expenses[] = [
-  { id: 1, name: 'gasto 1', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-  { id: 2, name: 'gasto 2', value: 10.0 },
-];
-
-const EXPENSES_DATA_2: Expenses[] = [{ id: 1, name: 'gasto 1', value: 10.0 }];
+const EXPENSES_DATA: Expenses[] = [];
+const BONUS_DATA: Expenses[] = [];
 
 @Component({
   selector: 'app-expenses',
@@ -40,8 +20,10 @@ const EXPENSES_DATA_2: Expenses[] = [{ id: 1, name: 'gasto 1', value: 10.0 }];
   styleUrl: './expenses.component.css',
 })
 export class ExpensesComponent {
-  expensesData = input<Expenses[]>(EXPENSES_DATA);
-  bonusData = input<Expenses[]>(EXPENSES_DATA_2);
+  @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal(EXPENSES_DATA);
+  @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal(BONUS_DATA);
+  @Input({ required: true }) idBonus: WritableSignal<number> = signal(0);
+  @Input({ required: true }) idExpenses: WritableSignal<number> = signal(0);
 
   displayedColumns: string[] = ['name', 'value'];
   displayedColumns2: string[] = ['total', 'value'];
@@ -56,4 +38,32 @@ export class ExpensesComponent {
       return acc + cur.value;
     }, 0)
   );
+
+  addBonus(expenses: boolean = true) {
+    expenses ? this.idExpenses.update((num) => num + 1) : this.idBonus.update((num) => num + 1);
+    expenses
+      ? this.expensesData.update(() => [
+          ...this.expensesData(),
+          { id: this.idExpenses(), name: 'gasto 2', value: Math.random() * (9999 - 1) + 1 },
+        ])
+      : this.bonusData.update(() => [
+          ...this.bonusData(),
+          { id: this.idBonus(), name: 'gasto 2', value: Math.random() * (9999 - 1) + 1 },
+        ]);
+  }
+  removeBonus(id: number, expenses: boolean = true) {
+    expenses
+      ? this.expensesData.update(() => {
+          return this.deleteElementById(id, this.expensesData());
+        })
+      : this.bonusData.update(() => {
+          return this.deleteElementById(id, this.bonusData());
+        });
+  }
+
+  private deleteElementById(id: number, listElements: Expenses[]) {
+    const elementId = listElements.findIndex((e: Expenses) => e.id === id);
+    listElements.splice(elementId, 1);
+    return [...listElements];
+  }
 }
