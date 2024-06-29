@@ -35,21 +35,6 @@ h2 {
     border-right: 1px solid #c4c6d0;
 }
 
-#total-sum {
-    display: flex;
-    text-align: center;
-    height: 51px;
-    margin: -1px;
-    border-top: 1px #c4c6d0 solid;
-    border-bottom: 1px #c4c6d0 solid;
-}
-
-#total-sum p {
-    padding: 15px;
-    font-size: large;
-    width: 100%;
-}
-
 tr.mat-mdc-footer-row {
     font-weight: bold;
 }
