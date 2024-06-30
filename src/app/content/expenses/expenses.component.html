@@ -1,53 +1,91 @@
 <div id="container">
-    <div id="expenses-table">
-        <h2>Despesas</h2>
-        <table matSort (matSortChange)="sortData($event, expensesData())">
-            <tr>
-                <th mat-sort-header="name">Nome</th>
-                <th mat-sort-header="value">Valor</th>
-            </tr>
+  <div id="expenses-table">
+    <h2>Despesas</h2>
+    <table matSort (matSortChange)="sortData($event, expensesData())">
+      <tr>
+        <th mat-sort-header="name">Nome</th>
+        <th mat-sort-header="value">Valor</th>
+      </tr>
 
-            @for (expense of expensesData(); track expense) {
-            <tr>
-                <td>{{expense.name}}</td>
-                <td>{{expense.value}}</td>
-                <button (click)="removeElement(expense.id, true)">X</button>
-            </tr>
-            }
-            <tr>
-                <td>Total: {{ totalExpenses() }}</td>
-            </tr>
-        </table>
-        <div>
-            <button (click)="addElement()" style="float: right; margin: 20px;">
-                add expense
-            </button>
-        </div>
+      @for (expense of expensesData(); track expense) {
+      <tr>
+        <td>{{expense.name}}</td>
+        <td>{{expense.value}}</td>
+        <button (click)="removeElement(expense.id, true)">X</button>
+      </tr>
+      }
+      <tr class="total-amount">
+        <td>Total:</td>
+        <td>{{ totalExpenses() }}</td>
+      </tr>
+    </table>
+    <form [formGroup]="expensesForm" class="expenses-input-form" (ngSubmit)="onSubmitExpense()"
+      (keydown.enter)="onSubmitExpense()">
+      <tr>
+        <td>
+          <mat-form-field class="expenses-input-form">
+            <mat-label>Item</mat-label>
+            <input #expenseValueInputRef matInput formControlName="name">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field class="input-field" floatLabel="always">
+            <mat-label>Valor</mat-label>
+            <input matInput type="number" placeholder="0" class="input-amount-value" formControlName="value">
+            <span matTextPrefix>R$&nbsp;</span>
+          </mat-form-field>
+        </td>
+      </tr>
+    </form>
+    <div>
+      <button (click)=" onSubmitExpense()" style="float: right; margin-right: 5px;">
+        adicionar
+      </button>
     </div>
+  </div>
 
-    <div id="bonus-table">
-        <h2>Ganhos</h2>
-        <table matSort (matSortChange)="sortData($event, bonusData())">
-            <tr>
-                <th mat-sort-header="name">Nome</th>
-                <th mat-sort-header="value">Valor</th>
-            </tr>
+  <div id="bonus-table">
+    <h2>Ganhos</h2>
+    <table matSort (matSortChange)="sortData($event, bonusData())">
+      <tr>
+        <th mat-sort-header="name">Nome</th>
+        <th mat-sort-header="value">Valor</th>
+      </tr>
 
-            @for (expense of bonusData(); track expense) {
-            <tr>
-                <td>{{expense.name}}</td>
-                <td>{{expense.value}}</td>
-                <button (click)="removeElement(expense.id, false)">X</button>
-            </tr>
-            }
-            <tr>
-                <td>Total: {{ totalBonus() }}</td>
-            </tr>
-        </table>
-        <div>
-            <button (click)="addElement(false)" style="float: right; margin: 20px;">
-                add bonus
-            </button>
-        </div>
+      @for (expense of bonusData(); track expense) {
+      <tr>
+        <td>{{expense.name}}</td>
+        <td>{{expense.value}}</td>
+        <button (click)="removeElement(expense.id, false)">X</button>
+      </tr>
+      }
+      <tr class="total-amount">
+        <td>Total</td>
+        <td>{{ totalBonus() }}</td>
+      </tr>
+    </table>
+    <form [formGroup]="bonusForm" class="expenses-input-form" (ngSubmit)="onSubmitBonus()"
+      (keydown.enter)="onSubmitBonus()">
+      <tr>
+        <td>
+          <mat-form-field class="expenses-input-form">
+            <mat-label>Item</mat-label>
+            <input #bonusValueInputRef matInput formControlName="name">
+          </mat-form-field>
+        </td>
+        <td>
+          <mat-form-field class="input-field" floatLabel="always">
+            <mat-label>Valor</mat-label>
+            <input matInput type="number" placeholder="0" class="input-amount-value" formControlName="value">
+            <span matTextPrefix>R$&nbsp;</span>
+          </mat-form-field>
+        </td>
+      </tr>
+    </form>
+    <div>
+      <button (click)=" onSubmitBonus()" style="float: right; margin-right: 5px;">
+        adicionar
+      </button>
     </div>
+  </div>
 </div>
