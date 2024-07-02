@@ -85,9 +85,7 @@ export class ExpensesComponent {
   }
 
   private deleteElementById(id: number, listElements: Expenses[]) {
-    const elementId = listElements.findIndex((e: Expenses) => e.id === id);
-    listElements.splice(elementId, 1);
-    return [...listElements];
+    return listElements.filter((e: Expenses) => e.id !== id);
   }
 
   sortData(sort: Sort, objectsList: Expenses[]) {
