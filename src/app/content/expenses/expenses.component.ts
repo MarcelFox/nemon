@@ -17,9 +17,6 @@ export interface ExpensesFormData {
   value: number;
 }
 
-const EXPENSES_DATA: Expenses[] = [];
-const BONUS_DATA: Expenses[] = [];
-
 @Component({
   selector: 'app-expenses',
   standalone: true,
@@ -36,8 +33,14 @@ const BONUS_DATA: Expenses[] = [];
   styleUrl: './expenses.component.css',
 })
 export class ExpensesComponent {
-  @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal(EXPENSES_DATA);
-  @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal(BONUS_DATA);
+  ngOnInit() {
+    const bonusFromLocalStorage = localStorage.getItem('bonusData') ?? '';
+    const expensesFromLocalStorage = localStorage.getItem('expenseData') ?? '';
+    this.bonusData.update(() => JSON.parse(bonusFromLocalStorage));
+    this.expensesData.update(() => JSON.parse(expensesFromLocalStorage));
+  }
+  @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal([]);
+  @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) idBonus: WritableSignal<number> = signal(0);
   @Input({ required: true }) idExpenses: WritableSignal<number> = signal(0);
   @Input({ required: true }) newExpenseData: WritableSignal<Expenses | {}> = signal({});
@@ -82,6 +85,9 @@ export class ExpensesComponent {
       : this.bonusData.update(() => {
           return this.deleteElementById(id, this.bonusData());
         });
+    expenses
+      ? localStorage.setItem('expenseData', JSON.stringify(this.expensesData()))
+      : localStorage.setItem('bonusData', JSON.stringify(this.bonusData()));
   }
 
   private deleteElementById(id: number, listElements: Expenses[]) {
@@ -100,10 +106,12 @@ export class ExpensesComponent {
     this.addElement(true, this.expensesForm.value as ExpensesFormData);
     this.expensesForm.reset();
     this.expensesValueInputRef.nativeElement.focus();
+    localStorage.setItem('expenseData', JSON.stringify(this.expensesData()));
   }
   onSubmitBonus() {
     this.addElement(false, this.bonusForm.value as ExpensesFormData);
     this.bonusForm.reset();
     this.bonusValueInputRef.nativeElement.focus();
+    localStorage.setItem('bonusData', JSON.stringify(this.bonusData()));
   }
 }
