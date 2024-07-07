@@ -3,13 +3,13 @@
     <h2>Despesas</h2>
     <table matSort (matSortChange)="sortData($event, expensesData())">
       <tr>
-        <th mat-sort-header="name">Nome</th>
+        <th mat-sort-header="detail">Nome</th>
         <th mat-sort-header="value">Valor</th>
       </tr>
 
       @for (expense of expensesData(); track expense) {
       <tr>
-        <td>{{expense.name}}</td>
+        <td>{{expense.detail}}</td>
         <td>{{expense.value}}</td>
         <button (click)="removeElement(expense.id, true)">X</button>
       </tr>
@@ -23,9 +23,9 @@
       (keydown.enter)="onSubmitExpense()">
       <tr>
         <td>
-          <mat-form-field class="expenses-input-form">
+          <mat-form-field class="expenses-input-form" floatLabel="always">
             <mat-label>Item</mat-label>
-            <input #expenseValueInputRef matInput formControlName="name">
+            <input #expenseValueInputRef matInput formControlName="detail">
           </mat-form-field>
         </td>
         <td>
@@ -41,6 +41,9 @@
       <button (click)=" onSubmitExpense()" style="float: right; margin-right: 5px;">
         adicionar
       </button>
+      <button (click)="onSave('expense', this.expensesData)" style="float: right; margin-right: 5px;">
+        salvar
+      </button>
     </div>
   </div>
 
@@ -48,13 +51,13 @@
     <h2>Ganhos</h2>
     <table matSort (matSortChange)="sortData($event, bonusData())">
       <tr>
-        <th mat-sort-header="name">Nome</th>
+        <th mat-sort-header="detail">Nome</th>
         <th mat-sort-header="value">Valor</th>
       </tr>
 
       @for (expense of bonusData(); track expense) {
       <tr>
-        <td>{{expense.name}}</td>
+        <td>{{expense.detail}}</td>
         <td>{{expense.value}}</td>
         <button (click)="removeElement(expense.id, false)">X</button>
       </tr>
@@ -68,9 +71,9 @@
       (keydown.enter)="onSubmitBonus()">
       <tr>
         <td>
-          <mat-form-field class="expenses-input-form">
+          <mat-form-field class="expenses-input-form" floatLabel="always">
             <mat-label>Item</mat-label>
-            <input #bonusValueInputRef matInput formControlName="name">
+            <input #bonusValueInputRef matInput formControlName="detail">
           </mat-form-field>
         </td>
         <td>
@@ -83,8 +86,11 @@
       </tr>
     </form>
     <div>
-      <button (click)=" onSubmitBonus()" style="float: right; margin-right: 5px;">
+      <button (click)="onSubmitBonus()" style="float: right; margin-right: 5px;">
         adicionar
+      </button>
+      <button (click)="onSave('bonus', this.bonusData)" style="float: right; margin-right: 5px;">
+        salvar
       </button>
     </div>
   </div>
