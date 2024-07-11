@@ -7,7 +7,7 @@
         <th mat-sort-header="value">Valor</th>
       </tr>
 
-      @for (expense of expensesData(); track expense) {
+      @for (expense of expensesData(); track expense.id) {
       <tr>
         <td>{{expense.detail}}</td>
         <td>{{expense.value}}</td>
@@ -41,7 +41,7 @@
       <button (click)=" onSubmitExpense()" style="float: right; margin-right: 5px;">
         adicionar
       </button>
-      <button (click)="onSave('expense', this.expensesData)" style="float: right; margin-right: 5px;">
+      <button [hidden]="!expenseChanged" (click)="onSave('expense', this.expensesData)" style="float: right; margin-right: 5px;">
         salvar
       </button>
     </div>
@@ -55,7 +55,7 @@
         <th mat-sort-header="value">Valor</th>
       </tr>
 
-      @for (expense of bonusData(); track expense) {
+      @for (expense of bonusData(); track expense.id) {
       <tr>
         <td>{{expense.detail}}</td>
         <td>{{expense.value}}</td>
@@ -89,7 +89,7 @@
       <button (click)="onSubmitBonus()" style="float: right; margin-right: 5px;">
         adicionar
       </button>
-      <button (click)="onSave('bonus', this.bonusData)" style="float: right; margin-right: 5px;">
+      <button [hidden]="!bonusChanged" (click)="onSave('bonus', this.bonusData)" style="float: right; margin-right: 5px;">
         salvar
       </button>
     </div>
