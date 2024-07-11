@@ -43,11 +43,6 @@ export interface ExpensesCollection {
 export class ExpensesComponent {
   expensesService = inject(ExpensesService);
 
-  ngOnInit() {
-    this.initExpenseData(localStorage.getItem('bonus'), this.bonusData, 'bonus');
-    this.initExpenseData(localStorage.getItem('expense'), this.expensesData, 'expense');
-  }
-
   @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) idBonus: WritableSignal<number> = signal(0);
@@ -58,6 +53,10 @@ export class ExpensesComponent {
 
   displayedColumns: string[] = ['detail', 'value'];
   displayedColumns2: string[] = ['total', 'value'];
+  expenseChanged: boolean = false;
+  bonusChanged: boolean = false;
+  expenseLen: number = 0;
+  bonusLen: number = 0;
 
   expensesForm = new FormGroup({
     detail: new FormControl(''),
@@ -67,6 +66,12 @@ export class ExpensesComponent {
     detail: new FormControl(''),
     value: new FormControl(0),
   });
+  ngOnInit() {
+    this.initExpenseData(localStorage.getItem('bonus'), this.bonusData, 'bonus');
+    this.initExpenseData(localStorage.getItem('expense'), this.expensesData, 'expense');
+    this.bonusChanged = !!localStorage.getItem('bonusChanged');
+    this.expenseChanged = !!localStorage.getItem('expenseChanged');
+  }
 
   public totalExpenses = computed(() =>
     this.expensesData()
@@ -93,13 +98,22 @@ export class ExpensesComponent {
     localStorageData: string | null,
     collectionSignal: WritableSignal<Expenses[]>,
     expenseType: string
-  ) {
+  ): void {
     if (localStorageData) {
       collectionSignal.update(() => JSON.parse(localStorageData));
+      expenseType === 'expense'
+        ? this.idBonus.update(() => this.bonusData().length)
+        : this.idExpenses.update(() => this.expensesData().length);
     } else {
       this.expensesService.getExpensesByType(expenseType).subscribe((doc) =>
-        doc.map((e) => {
+        doc.forEach((e) => {
           collectionSignal.update(() => e.data);
+          if (expenseType === 'expense') {
+            this.idExpenses.update(() => collectionSignal().length);
+          }
+          if (expenseType === 'bonus') {
+            this.idBonus.update(() => collectionSignal().length);
+          }
           localStorage.setItem(expenseType, JSON.stringify(collectionSignal()));
           localStorage.setItem(`id_${expenseType}`, e.id);
         })
@@ -108,27 +122,57 @@ export class ExpensesComponent {
   }
 
   public addElement(expenses: boolean, expenseData: ExpensesFormData) {
-    expenses ? this.idExpenses.update((num) => num + 1) : this.idBonus.update((num) => num + 1);
-    expenses
-      ? this.expensesData.update(() => [...this.expensesData(), { ...expenseData, id: this.idExpenses() }])
-      : this.bonusData.update(() => [...this.bonusData(), { ...expenseData, id: this.idBonus() }]);
+    if (expenses) {
+      console.log(this.idExpenses());
+      this.idExpenses.update((num) => num + 1);
+      this.expensesData.update(() => [...this.expensesData(), { ...expenseData, id: this.idExpenses() }]);
+      this.expenseChanged = true;
+      localStorage.setItem('expenseChanged', '1');
+    } else {
+      console.log(this.idBonus());
+      this.idBonus.update((num) => num + 1);
+      this.bonusData.update(() => [...this.bonusData(), { ...expenseData, id: this.idBonus() }]);
+      this.bonusChanged = true;
+      localStorage.setItem('bonusChanged', '1');
+    }
   }
 
-  public removeElement(id: number, expenses: boolean = true) {
-    expenses
-      ? this.expensesData.update(() => {
-          return this.deleteElementById(id, this.expensesData());
-        })
-      : this.bonusData.update(() => {
-          return this.deleteElementById(id, this.bonusData());
-        });
-    expenses
-      ? localStorage.setItem('expense', JSON.stringify(this.expensesData()))
-      : localStorage.setItem('bonus', JSON.stringify(this.bonusData()));
+  public removeElement(id: number, expense: boolean = true) {
+    if (expense) {
+      this.expensesData.update(() => {
+        return this.deleteElementById(id, this.expensesData(), expense);
+      });
+      localStorage.setItem('expense', JSON.stringify(this.expensesData()));
+      this.expenseChanged = true;
+      localStorage.setItem('expenseChanged', '1');
+    } else {
+      this.bonusData.update(() => {
+        return this.deleteElementById(id, this.bonusData(), expense);
+      });
+      localStorage.setItem('bonus', JSON.stringify(this.bonusData()));
+      this.bonusChanged = true;
+      localStorage.setItem('bonusChanged', '1');
+    }
   }
 
-  private deleteElementById(id: number, listElements: Expenses[]) {
-    return listElements.filter((e: Expenses) => e.id !== id);
+  private deleteElementById(id: number, listElements: Expenses[], expense: boolean): Expenses[] {
+    const newList = listElements.filter((e: Expenses) => e.id !== id);
+    newList.forEach((e) => {
+      if (e.id >= id) {
+        e.id = e.id - 1;
+      }
+    });
+    expense ? this.idExpenses.update(() => newList.length) : this.idBonus.update(() => newList.length);
+    return newList;
+  }
+
+  /**
+   * Get the value of the key from local storage.
+   * @param key Key to be queried.
+   * @returns Value of the local storage for thegiven key as string.
+   */
+  private getKeyFromLocalStorage(key: string): string {
+    return localStorage.getItem(key) ?? '';
   }
 
   sortData(sort: Sort, objectsList: Expenses[]) {
@@ -160,7 +204,11 @@ export class ExpensesComponent {
         .subscribe((id) => alert(`${expenseType} added with id ${id}`));
     } else {
       this.expensesService.updateExpenseData(idFirestoreCollection, collectionSignal());
-      localStorage.setItem('bonus', JSON.stringify(collectionSignal()));
+      expenseType === 'expense'
+        ? localStorage.setItem('expense', JSON.stringify(collectionSignal()))
+        : localStorage.setItem('bonus', JSON.stringify(collectionSignal()));
     }
+    expenseType === 'expense' ? (this.expenseChanged = false) : (this.bonusChanged = false);
+    expenseType === 'expense' ? localStorage.removeItem('expenseChanged') : localStorage.removeItem('bonusChanged');
   }
 }
