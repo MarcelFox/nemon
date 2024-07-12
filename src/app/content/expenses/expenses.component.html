@@ -19,8 +19,8 @@
         <td>{{ totalExpenses() }}</td>
       </tr>
     </table>
-    <form [formGroup]="expensesForm" class="expenses-input-form" (ngSubmit)="onSubmitExpense()"
-      (keydown.enter)="onSubmitExpense()">
+    <form [formGroup]="expensesForm" class="expenses-input-form"
+      (keydown.enter)="onAddExpense(this.expensesForm, this.expensesData, 'expense')">
       <tr>
         <td>
           <mat-form-field class="expenses-input-form" floatLabel="always">
@@ -38,10 +38,12 @@
       </tr>
     </form>
     <div>
-      <button (click)=" onSubmitExpense()" style="float: right; margin-right: 5px;">
+      <button (click)=" onAddExpense(this.expensesForm, this.expensesData, 'expense')"
+        style="float: right; margin-right: 5px;">
         adicionar
       </button>
-      <button [hidden]="!expenseChanged" (click)="onSave('expense', this.expensesData)" style="float: right; margin-right: 5px;">
+      <button [hidden]="!expenseChanged" (click)="onSave('expense', this.expensesData)"
+        style="float: right; margin-right: 5px;">
         salvar
       </button>
     </div>
@@ -67,8 +69,8 @@
         <td>{{ totalBonus() }}</td>
       </tr>
     </table>
-    <form [formGroup]="bonusForm" class="expenses-input-form" (ngSubmit)="onSubmitBonus()"
-      (keydown.enter)="onSubmitBonus()">
+    <form [formGroup]="bonusForm" class="expenses-input-form"
+      (keydown.enter)="onAddExpense(this.bonusForm, this.bonusData, 'bonus')">
       <tr>
         <td>
           <mat-form-field class="expenses-input-form" floatLabel="always">
@@ -86,10 +88,11 @@
       </tr>
     </form>
     <div>
-      <button (click)="onSubmitBonus()" style="float: right; margin-right: 5px;">
+      <button (click)="onAddExpense(this.bonusForm, this.bonusData, 'bonus')" style="float: right; margin-right: 5px;">
         adicionar
       </button>
-      <button [hidden]="!bonusChanged" (click)="onSave('bonus', this.bonusData)" style="float: right; margin-right: 5px;">
+      <button [hidden]="!bonusChanged" (click)="onSave('bonus', this.bonusData)"
+        style="float: right; margin-right: 5px;">
         salvar
       </button>
     </div>
