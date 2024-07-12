@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesService } from '../../services/expenses.service';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 export interface Expenses {
   id: number;
@@ -42,6 +43,7 @@ export interface ExpensesCollection {
 })
 export class ExpensesComponent {
   expensesService = inject(ExpensesService);
+  localStorageService = inject(LocalStorageService);
 
   @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal([]);
@@ -67,10 +69,10 @@ export class ExpensesComponent {
     value: new FormControl(0),
   });
   ngOnInit() {
-    this.initExpenseData(localStorage.getItem('bonus'), this.bonusData, 'bonus');
-    this.initExpenseData(localStorage.getItem('expense'), this.expensesData, 'expense');
-    this.bonusChanged = !!localStorage.getItem('bonusChanged');
-    this.expenseChanged = !!localStorage.getItem('expenseChanged');
+    this.initExpenseData(this.localStorageService.get('bonus'), this.bonusData, 'bonus');
+    this.initExpenseData(this.localStorageService.get('expense'), this.expensesData, 'expense');
+    this.bonusChanged = !!this.localStorageService.get('bonusChanged');
+    this.expenseChanged = !!this.localStorageService.get('expenseChanged');
   }
 
   public totalExpenses = computed(() =>
@@ -114,8 +116,8 @@ export class ExpensesComponent {
           if (expenseType === 'bonus') {
             this.idBonus.update(() => collectionSignal().length);
           }
-          localStorage.setItem(expenseType, JSON.stringify(collectionSignal()));
-          localStorage.setItem(`id_${expenseType}`, e.id);
+          this.localStorageService.set(expenseType, JSON.stringify(collectionSignal()));
+          this.localStorageService.set(`id_${expenseType}`, e.id);
         })
       );
     }
@@ -127,13 +129,13 @@ export class ExpensesComponent {
       this.idExpenses.update((num) => num + 1);
       this.expensesData.update(() => [...this.expensesData(), { ...expenseData, id: this.idExpenses() }]);
       this.expenseChanged = true;
-      localStorage.setItem('expenseChanged', '1');
+      this.localStorageService.set('expenseChanged', '1');
     } else {
       console.log(this.idBonus());
       this.idBonus.update((num) => num + 1);
       this.bonusData.update(() => [...this.bonusData(), { ...expenseData, id: this.idBonus() }]);
       this.bonusChanged = true;
-      localStorage.setItem('bonusChanged', '1');
+      this.localStorageService.set('bonusChanged', '1');
     }
   }
 
@@ -142,16 +144,16 @@ export class ExpensesComponent {
       this.expensesData.update(() => {
         return this.deleteElementById(id, this.expensesData(), expense);
       });
-      localStorage.setItem('expense', JSON.stringify(this.expensesData()));
+      this.localStorageService.set('expense', JSON.stringify(this.expensesData()));
       this.expenseChanged = true;
-      localStorage.setItem('expenseChanged', '1');
+      this.localStorageService.set('expenseChanged', '1');
     } else {
       this.bonusData.update(() => {
         return this.deleteElementById(id, this.bonusData(), expense);
       });
-      localStorage.setItem('bonus', JSON.stringify(this.bonusData()));
+      this.localStorageService.set('bonus', JSON.stringify(this.bonusData()));
       this.bonusChanged = true;
-      localStorage.setItem('bonusChanged', '1');
+      this.localStorageService.set('bonusChanged', '1');
     }
   }
 
@@ -166,38 +168,29 @@ export class ExpensesComponent {
     return newList;
   }
 
-  /**
-   * Get the value of the key from local storage.
-   * @param key Key to be queried.
-   * @returns Value of the local storage for thegiven key as string.
-   */
-  private getKeyFromLocalStorage(key: string): string {
-    return localStorage.getItem(key) ?? '';
-  }
-
   sortData(sort: Sort, objectsList: Expenses[]) {
     objectsList.sort((a, b) => (sort.direction === 'asc' ? a.value - b.value : b.value - a.value));
   }
 
   /**
-   * Submit form.
-   * @param expenses True if expense data, False if bonus data
+   * Add a new expense into the expenses collection 'data' array.
+   * @param formGroupData Form group data to be readed.
+   * @param expenseData Expense signal to be used.
+   * @param expense Expense type, either 'expense' or 'bonus'.
    */
-  onSubmitExpense() {
-    this.addElement(true, this.expensesForm.value as ExpensesFormData);
-    this.expensesForm.reset();
-    this.expensesValueInputRef.nativeElement.focus();
-    localStorage.setItem('expense', JSON.stringify(this.expensesData()));
-  }
-  onSubmitBonus() {
-    this.addElement(false, this.bonusForm.value as ExpensesFormData);
-    this.bonusForm.reset();
-    this.bonusValueInputRef.nativeElement.focus();
-    localStorage.setItem('bonus', JSON.stringify(this.bonusData()));
+  onAddExpense(formGroupData: FormGroup, expenseData: WritableSignal<Expenses[]>, expense: string): void {
+    console.log(formGroupData)
+    console.log(expenseData())
+    this.addElement(expense === 'expense', formGroupData.value as ExpensesFormData);
+    formGroupData.reset();
+    expense === 'expense'
+      ? this.expensesValueInputRef.nativeElement.focus()
+      : this.bonusValueInputRef.nativeElement.focus();
+    this.localStorageService.set(expense, JSON.stringify(expenseData()));
   }
 
   onSave(expenseType: string, collectionSignal: WritableSignal<Expenses[]>) {
-    const idFirestoreCollection = localStorage.getItem(`id_${expenseType}`);
+    const idFirestoreCollection = this.localStorageService.get(`id_${expenseType}`);
     if (!idFirestoreCollection) {
       this.expensesService
         .addExpense(collectionSignal(), expenseType)
@@ -205,10 +198,13 @@ export class ExpensesComponent {
     } else {
       this.expensesService.updateExpenseData(idFirestoreCollection, collectionSignal());
       expenseType === 'expense'
-        ? localStorage.setItem('expense', JSON.stringify(collectionSignal()))
-        : localStorage.setItem('bonus', JSON.stringify(collectionSignal()));
+        ? this.localStorageService.set('expense', JSON.stringify(collectionSignal()))
+        : this.localStorageService.set('bonus', JSON.stringify(collectionSignal()));
     }
     expenseType === 'expense' ? (this.expenseChanged = false) : (this.bonusChanged = false);
-    expenseType === 'expense' ? localStorage.removeItem('expenseChanged') : localStorage.removeItem('bonusChanged');
+    expenseType === 'expense'
+      ? this.localStorageService.delete('expenseChanged')
+      : this.localStorageService.delete('bonusChanged');
+    console.log(this.localStorageService.get('bonus'))
   }
 }
