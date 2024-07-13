@@ -1,4 +1,11 @@
-export function logAtExecution(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+/**
+ * Wrapper function to log methods of a class.
+ * @param target any
+ * @param propertyKey Class properties key
+ * @param descriptor Property descriptior
+ * @returns PropertyDescriptor
+ */
+export function logAtExecution(target: any, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
   const originalMethod = descriptor.value;
 
   descriptor.value = function (...args: any[]) {
