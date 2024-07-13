@@ -39,11 +39,11 @@
     </form>
     <div>
       <button (click)=" onAddExpense(this.expensesForm, this.expensesData, 'expense')"
-        style="float: right; margin-right: 5px;">
+        style="float: right;">
         adicionar
       </button>
       <button [hidden]="!expenseChanged" (click)="onSave('expense', this.expensesData)"
-        style="float: right; margin-right: 5px;">
+        style="float: right;">
         salvar
       </button>
     </div>
@@ -88,11 +88,11 @@
       </tr>
     </form>
     <div>
-      <button (click)="onAddExpense(this.bonusForm, this.bonusData, 'bonus')" style="float: right; margin-right: 5px;">
+      <button (click)="onAddExpense(this.bonusForm, this.bonusData, 'bonus')" style="float: right;">
         adicionar
       </button>
       <button [hidden]="!bonusChanged" (click)="onSave('bonus', this.bonusData)"
-        style="float: right; margin-right: 5px;">
+        style="float: right;">
         salvar
       </button>
     </div>

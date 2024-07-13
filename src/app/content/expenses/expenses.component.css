@@ -1,10 +1,11 @@
+
 table {
   height: fit-content;
 }
 
 #container {
   display: flex;
-  width: 100%;
+  width: auto;
   height: auto;
   overflow: auto;
   padding-bottom: 20px;
@@ -28,14 +29,6 @@ h2 {
   border-bottom: 2px solid coral;
 }
 
-.mat-mdc-table-sticky-border-elem-right {
-  border-left: 1px solid #c4c6d0;
-}
-
-.mat-mdc-table-sticky-border-elem-left {
-  border-right: 1px solid #c4c6d0;
-}
-
 tr.mat-mdc-footer-row {
   font-weight: bold;
 }
@@ -46,7 +39,7 @@ tr.mat-mdc-footer-row {
 }
 
 .expenses-input-form {
-  width: 205px;
+  width: 200px;
   margin-top: 10px;
   background-color: transparent;
 }
