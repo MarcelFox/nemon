@@ -9,8 +9,9 @@ import {
   doc,
   docData,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
-import { Observable, from, map, first } from 'rxjs';
+import { Observable, from, map, first, tap } from 'rxjs';
 import { Expenses, ExpensesCollection } from '../content/expenses/expenses.component';
 import { logAtExecution } from '../shared/utils';
 
@@ -18,26 +19,28 @@ import { logAtExecution } from '../shared/utils';
   providedIn: 'root',
 })
 export class ExpensesService {
+  expenses$: Observable<ExpensesCollection[]>;
   firestore = inject(Firestore);
   expansesCollection = collection(this.firestore, 'expenses');
 
+  constructor() {
+    this.expenses$ = collectionData(this.expansesCollection, {
+      idField: 'id',
+    });
+  }
+
   @logAtExecution
   public getAllExpenses(): Observable<ExpensesCollection[]> {
-    return collectionData(this.expansesCollection, {
-      idField: 'id',
-    }) as Observable<ExpensesCollection[]>;
+    return this.expenses$;
   }
 
   @logAtExecution
   public getExpensesByType(expenseType: string): Observable<ExpensesCollection[]> {
-    const data$ = collectionData(this.expansesCollection, {
-      idField: 'id',
-    }) as Observable<ExpensesCollection[]>;
-    return data$.pipe(map((doc) => doc.filter((e: ExpensesCollection) => e.type === expenseType)));
+    return this.expenses$.pipe(map((doc) => doc.filter((e: ExpensesCollection) => e.type === expenseType)));
   }
   @logAtExecution
   public getExpensesById(expenseId: string): Observable<ExpensesCollection[]> {
-    return docData(this.getDocRef(expenseId));
+    return this.expenses$.pipe(map((doc) => doc.filter((e) => e.id === expenseId)));
   }
 
   @logAtExecution
@@ -54,7 +57,11 @@ export class ExpensesService {
 
   @logAtExecution
   public updateExpenseData(expenseId: string, data: Expenses[]): void {
-    this.getExpensesById(expenseId).subscribe((doc) => from(setDoc(this.getDocRef(expenseId), { ...doc, data })));
+    this.getExpensesById(expenseId)
+      .pipe(first())
+      .subscribe((doc) => {
+        doc.filter((e) => from(updateDoc(this.getDocRef(expenseId), { ...e, data })));
+      });
   }
 
   @logAtExecution
