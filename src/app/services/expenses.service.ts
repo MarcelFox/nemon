@@ -57,6 +57,7 @@ export class ExpensesService {
 
   @logAtExecution
   public updateExpenseData(expenseId: string, data: Expenses[]): void {
+    // TODO: Consider  transaction instead of first() pipe operator.
     this.getExpensesById(expenseId)
       .pipe(first())
       .subscribe((doc) => {
