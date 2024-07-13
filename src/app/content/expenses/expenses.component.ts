@@ -125,13 +125,11 @@ export class ExpensesComponent {
 
   public addElement(expenses: boolean, expenseData: ExpensesFormData) {
     if (expenses) {
-      console.log(this.idExpenses());
       this.idExpenses.update((num) => num + 1);
       this.expensesData.update(() => [...this.expensesData(), { ...expenseData, id: this.idExpenses() }]);
       this.expenseChanged = true;
       this.localStorageService.set('expenseChanged', '1');
     } else {
-      console.log(this.idBonus());
       this.idBonus.update((num) => num + 1);
       this.bonusData.update(() => [...this.bonusData(), { ...expenseData, id: this.idBonus() }]);
       this.bonusChanged = true;
@@ -179,8 +177,6 @@ export class ExpensesComponent {
    * @param expense Expense type, either 'expense' or 'bonus'.
    */
   onAddExpense(formGroupData: FormGroup, expenseData: WritableSignal<Expenses[]>, expense: string): void {
-    console.log(formGroupData)
-    console.log(expenseData())
     this.addElement(expense === 'expense', formGroupData.value as ExpensesFormData);
     formGroupData.reset();
     expense === 'expense'
@@ -205,6 +201,5 @@ export class ExpensesComponent {
     expenseType === 'expense'
       ? this.localStorageService.delete('expenseChanged')
       : this.localStorageService.delete('bonusChanged');
-    console.log(this.localStorageService.get('bonus'))
   }
 }
