@@ -73,6 +73,8 @@ export class ExpensesComponent {
     this.initExpenseData(this.localStorageService.get('expense'), this.expensesData, 'expense');
     this.bonusChanged = !!this.localStorageService.get('bonusChanged');
     this.expenseChanged = !!this.localStorageService.get('expenseChanged');
+    this.idBonus.update(()=> Number(this.localStorageService.get('LastBonusID')));
+    this.idExpenses.update(()=> Number(this.localStorageService.get('LastExpensesID')));
   }
 
   public totalExpenses = computed(() =>
@@ -129,11 +131,13 @@ export class ExpensesComponent {
       this.expensesData.update(() => [...this.expensesData(), { ...expenseData, id: this.idExpenses() }]);
       this.expenseChanged = true;
       this.localStorageService.set('expenseChanged', '1');
+      this.localStorageService.set('lastExpensesID', `${this.idExpenses()}`);
     } else {
       this.idBonus.update((num) => num + 1);
       this.bonusData.update(() => [...this.bonusData(), { ...expenseData, id: this.idBonus() }]);
       this.bonusChanged = true;
       this.localStorageService.set('bonusChanged', '1');
+      this.localStorageService.set('lastBonusID', `${this.idBonus()}`);
     }
   }
 
