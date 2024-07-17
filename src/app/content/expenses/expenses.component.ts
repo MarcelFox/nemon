@@ -73,8 +73,8 @@ export class ExpensesComponent {
     this.initExpenseData(this.localStorageService.get('expense'), this.expensesData, 'expense');
     this.bonusChanged = !!this.localStorageService.get('bonusChanged');
     this.expenseChanged = !!this.localStorageService.get('expenseChanged');
-    this.idBonus.update(()=> Number(this.localStorageService.get('LastBonusID')));
-    this.idExpenses.update(()=> Number(this.localStorageService.get('LastExpensesID')));
+    this.idBonus.update(() => Number(this.localStorageService.get('idBonus')));
+    this.idExpenses.update(() => Number(this.localStorageService.get('idExpenses')));
   }
 
   public totalExpenses = computed(() =>
@@ -106,17 +106,19 @@ export class ExpensesComponent {
     if (localStorageData) {
       collectionSignal.update(() => JSON.parse(localStorageData));
       expenseType === 'expense'
-        ? this.idBonus.update(() => this.bonusData().length)
-        : this.idExpenses.update(() => this.expensesData().length);
+        ? this.idExpenses.update(() => this.bonusData().length)
+        : this.idBonus.update(() => this.expensesData().length);
     } else {
       this.expensesService.getExpensesByType(expenseType).subscribe((doc) =>
         doc.forEach((e) => {
           collectionSignal.update(() => e.data);
           if (expenseType === 'expense') {
             this.idExpenses.update(() => collectionSignal().length);
+            this.localStorageService.set('idExpenses', `${this.idExpenses()}`);
           }
           if (expenseType === 'bonus') {
             this.idBonus.update(() => collectionSignal().length);
+            this.localStorageService.set('idBonus', `${this.idBonus()}`);
           }
           this.localStorageService.set(expenseType, JSON.stringify(collectionSignal()));
           this.localStorageService.set(`id_${expenseType}`, e.id);
@@ -131,13 +133,13 @@ export class ExpensesComponent {
       this.expensesData.update(() => [...this.expensesData(), { ...expenseData, id: this.idExpenses() }]);
       this.expenseChanged = true;
       this.localStorageService.set('expenseChanged', '1');
-      this.localStorageService.set('lastExpensesID', `${this.idExpenses()}`);
+      this.localStorageService.set('idExpenses', `${this.idExpenses()}`);
     } else {
       this.idBonus.update((num) => num + 1);
       this.bonusData.update(() => [...this.bonusData(), { ...expenseData, id: this.idBonus() }]);
       this.bonusChanged = true;
       this.localStorageService.set('bonusChanged', '1');
-      this.localStorageService.set('lastBonusID', `${this.idBonus()}`);
+      this.localStorageService.set('idBonus', `${this.idBonus()}`);
     }
   }
 
@@ -149,6 +151,7 @@ export class ExpensesComponent {
       this.localStorageService.set('expense', JSON.stringify(this.expensesData()));
       this.expenseChanged = true;
       this.localStorageService.set('expenseChanged', '1');
+      this.localStorageService.set('idExpenses', `${this.idExpenses()}`);
     } else {
       this.bonusData.update(() => {
         return this.deleteElementById(id, this.bonusData(), expense);
@@ -156,6 +159,7 @@ export class ExpensesComponent {
       this.localStorageService.set('bonus', JSON.stringify(this.bonusData()));
       this.bonusChanged = true;
       this.localStorageService.set('bonusChanged', '1');
+      this.localStorageService.set('idBonus', `${this.idBonus()}`);
     }
   }
 
