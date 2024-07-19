@@ -3,10 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node loadEnvVars.js --env=development; ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start": "npm run load && ng serve",
+    "build": "npm run load && ng build",
+    "watch": "npm run load && ng build --watch --configuration development",
+    "test": "npm run load && ng test",
+    "load": "node loadEnvVars.js --env=development"
   },
   "private": true,
   "dependencies": {
