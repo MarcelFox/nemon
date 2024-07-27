@@ -7,8 +7,6 @@ import {
   collectionData,
   deleteDoc,
   doc,
-  docData,
-  setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
 import { Observable, from, map, first, tap } from 'rxjs';
@@ -63,6 +61,17 @@ export class ExpensesService {
       .subscribe((doc) => {
         doc.filter((e) => from(updateDoc(this.getDocRef(expenseId), { ...e, data })));
       });
+  }
+
+  public getExpensesDates(): Observable<{ id: number; month: Date }[]> {
+    return this.getAllExpenses().pipe(
+      map((docs) => {
+        const dates = docs.map((e) => e.createdAt);
+        return dates.flatMap((d, id) => {
+          return { id, month: d.toDate() };
+        });
+      })
+    );
   }
 
   @logAtExecution

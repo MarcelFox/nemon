@@ -1,3 +1,11 @@
+<div id="month-tabs">
+  <ul class="tabs">
+    @for (e of months(); track e.id) {
+    <li (click)="onMonthClick(e.id)" [ngClass]="{'tab': true, 'active': (e.id === activeMonthId())}">{{e.month | date:
+      'MMM'}}</li>
+    }
+  </ul>
+</div>
 <div id="container">
   <div id="expenses-table">
     <h2>Despesas</h2>
@@ -38,12 +46,10 @@
       </tr>
     </form>
     <div>
-      <button (click)=" onAddExpense(this.expensesForm, this.expensesData, 'expense')"
-        style="float: right;">
+      <button (click)=" onAddExpense(this.expensesForm, this.expensesData, 'expense')" style="float: right;">
         adicionar
       </button>
-      <button [hidden]="!expenseChanged" (click)="onSave('expense', this.expensesData)"
-        style="float: right;">
+      <button [hidden]="!expenseChanged" (click)="onSave('expense', this.expensesData)" style="float: right;">
         salvar
       </button>
     </div>
@@ -91,8 +97,7 @@
       <button (click)="onAddExpense(this.bonusForm, this.bonusData, 'bonus')" style="float: right;">
         adicionar
       </button>
-      <button [hidden]="!bonusChanged" (click)="onSave('bonus', this.bonusData)"
-        style="float: right;">
+      <button [hidden]="!bonusChanged" (click)="onSave('bonus', this.bonusData)" style="float: right;">
         salvar
       </button>
     </div>

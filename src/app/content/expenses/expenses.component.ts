@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesService } from '../../services/expenses.service';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { Timestamp } from '@angular/fire/firestore';
 
 export interface Expenses {
   id: number;
@@ -20,7 +21,7 @@ export interface ExpensesFormData {
 }
 
 export interface ExpensesCollection {
-  createdAt: Date;
+  createdAt: Timestamp;
   data: Expenses[];
   id: string;
   type: string;
@@ -45,10 +46,12 @@ export class ExpensesComponent {
   expensesService = inject(ExpensesService);
   localStorageService = inject(LocalStorageService);
 
+  @Input({ required: true }) months: WritableSignal<{ id: number; month: Date }[]> = signal([]);
   @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) idBonus: WritableSignal<number> = signal(0);
   @Input({ required: true }) idExpenses: WritableSignal<number> = signal(0);
+  @Input({ required: true }) activeMonthId: WritableSignal<number> = signal(0);
 
   @ViewChild('expenseValueInputRef') expensesValueInputRef!: ElementRef;
   @ViewChild('bonusValueInputRef') bonusValueInputRef!: ElementRef;
@@ -77,6 +80,10 @@ export class ExpensesComponent {
     this.idExpenses.update(() => Number(this.localStorageService.get('idExpenses')));
   }
 
+  public onMonthClick(id: number) {
+    this.activeMonthId.update(() => id);
+  }
+
   public totalExpenses = computed(() =>
     this.expensesData()
       ? this.expensesData().reduce((acc: number, cur: Expenses): number => {
@@ -103,6 +110,9 @@ export class ExpensesComponent {
     collectionSignal: WritableSignal<Expenses[]>,
     expenseType: string
   ): void {
+    this.expensesService
+      .getExpensesDates()
+      .subscribe((e) => this.months.update(() => e));
     if (localStorageData) {
       collectionSignal.update(() => JSON.parse(localStorageData));
       expenseType === 'expense'
