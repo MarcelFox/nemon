@@ -46,7 +46,7 @@ export class ExpensesComponent {
   expensesService = inject(ExpensesService);
   localStorageService = inject(LocalStorageService);
 
-  @Input({ required: true }) months: WritableSignal<{ id: number; month: Date }[]> = signal([]);
+  @Input({ required: true }) months: WritableSignal<{ id: number; date: Date }[]> = signal([]);
   @Input({ required: true }) expensesData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) bonusData: WritableSignal<Expenses[]> = signal([]);
   @Input({ required: true }) idBonus: WritableSignal<number> = signal(0);

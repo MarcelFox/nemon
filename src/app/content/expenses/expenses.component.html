@@ -1,7 +1,7 @@
 <div id="month-tabs">
   <ul class="tabs">
     @for (e of months(); track e.id) {
-    <li (click)="onMonthClick(e.id)" [ngClass]="{'tab': true, 'active': (e.id === activeMonthId())}">{{e.month | date:
+    <li (click)="onMonthClick(e.id)" [ngClass]="{'tab': true, 'active': (e.id === activeMonthId())}">{{e.date | date:
       'MMM'}}</li>
     }
   </ul>

@@ -63,12 +63,12 @@ export class ExpensesService {
       });
   }
 
-  public getExpensesDates(): Observable<{ id: number; month: Date }[]> {
+  public getExpensesDates(): Observable<{ id: number; date: Date }[]> {
     return this.getAllExpenses().pipe(
       map((docs) => {
         const dates = docs.map((e) => e.createdAt);
         return dates.flatMap((d, id) => {
-          return { id, month: d.toDate() };
+          return { id, date: d.toDate() };
         });
       })
     );
