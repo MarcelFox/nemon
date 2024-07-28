@@ -8,6 +8,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesService } from '../../services/expenses.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { Timestamp } from '@angular/fire/firestore';
+import { first } from 'rxjs';
 
 export interface Expenses {
   id: number;
@@ -110,9 +111,22 @@ export class ExpensesComponent {
     collectionSignal: WritableSignal<Expenses[]>,
     expenseType: string
   ): void {
+    // Initialize new month data:
     this.expensesService
-      .getExpensesDates()
-      .subscribe((e) => this.months.update(() => e));
+      .findDateByMonth()
+      .pipe(first())
+      .subscribe((date) => {
+        if (date.length < 1) {
+          this.expensesService.addExpense([], expenseType);
+        }
+      });
+    // Update months tabs:
+    this.expensesService.getExpensesDates().subscribe((e) => {
+      this.months.update(() => e);
+    });
+    this.expensesService.findDateByMonth().subscribe((e) => {
+      this.activeMonthId.update(() => e[0].id);
+    });
     if (localStorageData) {
       collectionSignal.update(() => JSON.parse(localStorageData));
       expenseType === 'expense'
