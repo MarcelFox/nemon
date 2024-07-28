@@ -27,33 +27,31 @@ export class ExpensesService {
     });
   }
 
-  @logAtExecution
   public getAllExpenses(): Observable<ExpensesCollection[]> {
     return this.expenses$;
   }
 
-  @logAtExecution
   public getExpensesByType(expenseType: string): Observable<ExpensesCollection[]> {
     return this.expenses$.pipe(map((doc) => doc.filter((e: ExpensesCollection) => e.type === expenseType)));
   }
-  @logAtExecution
   public getExpensesById(expenseId: string): Observable<ExpensesCollection[]> {
     return this.expenses$.pipe(map((doc) => doc.filter((e) => e.id === expenseId)));
   }
 
-  @logAtExecution
+  public getExpensesByMonth(month: number): Observable<ExpensesCollection[]> {
+    return this.expenses$.pipe(map((doc) => doc.filter((e) => e.createdAt.toDate().getMonth() === month)));
+  }
+
   public addExpense(data: Expenses[], expenseType: string): Observable<string> {
     return from(
       addDoc(this.expansesCollection, { createdAt: new Date(), data, type: expenseType }).then((reponse) => reponse.id)
     );
   }
 
-  @logAtExecution
   public deleteExpense(expenseId: string): Observable<void> {
     return from(deleteDoc(this.getDocRef(expenseId)));
   }
 
-  @logAtExecution
   public updateExpenseData(expenseId: string, data: Expenses[]): void {
     // TODO: Consider  transaction instead of first() pipe operator.
     this.getExpensesById(expenseId)
@@ -63,6 +61,7 @@ export class ExpensesService {
       });
   }
 
+  @logAtExecution
   public getExpensesDates(): Observable<{ id: number; date: Date }[]> {
     return this.getAllExpenses().pipe(
       map((docs) => {
@@ -90,7 +89,6 @@ export class ExpensesService {
     );
   }
 
-  @logAtExecution
   private getDocRef(id: string): DocumentReference {
     return doc(this.firestore, `expenses/${id}`);
   }

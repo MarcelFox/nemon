@@ -8,7 +8,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesService } from '../../services/expenses.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { Timestamp } from '@angular/fire/firestore';
-import { first } from 'rxjs';
+import { filter, first, map, tap } from 'rxjs';
 
 export interface Expenses {
   id: number;
@@ -73,16 +73,18 @@ export class ExpensesComponent {
     value: new FormControl(0),
   });
   ngOnInit() {
-    this.initExpenseData(this.localStorageService.get('bonus'), this.bonusData, 'bonus');
-    this.initExpenseData(this.localStorageService.get('expense'), this.expensesData, 'expense');
+    this.initExpenseData();
     this.bonusChanged = !!this.localStorageService.get('bonusChanged');
     this.expenseChanged = !!this.localStorageService.get('expenseChanged');
     this.idBonus.update(() => Number(this.localStorageService.get('idBonus')));
     this.idExpenses.update(() => Number(this.localStorageService.get('idExpenses')));
   }
 
-  public onMonthClick(id: number) {
-    this.activeMonthId.update(() => id);
+  public onMonthClick(e: { id: number; date: Date }) {
+    this.activeMonthId.update(() => e.id);
+    this.handleLocalData(e.date.getMonth());
+    this.bonusChanged = false;
+    this.expenseChanged = false;
   }
 
   public totalExpenses = computed(() =>
@@ -106,18 +108,15 @@ export class ExpensesComponent {
    * @param collectionSignal Signal type of the firestore collection
    * @param expenseType Type of the expense
    */
-  private initExpenseData(
-    localStorageData: string | null,
-    collectionSignal: WritableSignal<Expenses[]>,
-    expenseType: string
-  ): void {
+  private initExpenseData(): void {
     // Initialize new month data:
     this.expensesService
       .findDateByMonth()
       .pipe(first())
       .subscribe((date) => {
         if (date.length < 1) {
-          this.expensesService.addExpense([], expenseType);
+          this.expensesService.addExpense([], 'expense');
+          this.expensesService.addExpense([], 'bonus');
         }
       });
     // Update months tabs:
@@ -127,28 +126,40 @@ export class ExpensesComponent {
     this.expensesService.findDateByMonth().subscribe((e) => {
       this.activeMonthId.update(() => e[0].id);
     });
-    if (localStorageData) {
-      collectionSignal.update(() => JSON.parse(localStorageData));
-      expenseType === 'expense'
-        ? this.idExpenses.update(() => this.bonusData().length)
-        : this.idBonus.update(() => this.expensesData().length);
+    if (this.localStorageService.get('expense') || this.localStorageService.get('bonus')) {
+      this.expensesData.update(() => JSON.parse(this.localStorageService.get('expense') as string));
+      this.bonusData.update(() => JSON.parse(this.localStorageService.get('bonus') as string));
+      this.idExpenses.update(() => this.bonusData().length);
+      this.idBonus.update(() => this.expensesData().length);
     } else {
-      this.expensesService.getExpensesByType(expenseType).subscribe((doc) =>
-        doc.forEach((e) => {
-          collectionSignal.update(() => e.data);
-          if (expenseType === 'expense') {
-            this.idExpenses.update(() => collectionSignal().length);
-            this.localStorageService.set('idExpenses', `${this.idExpenses()}`);
-          }
-          if (expenseType === 'bonus') {
-            this.idBonus.update(() => collectionSignal().length);
-            this.localStorageService.set('idBonus', `${this.idBonus()}`);
-          }
-          this.localStorageService.set(expenseType, JSON.stringify(collectionSignal()));
-          this.localStorageService.set(`id_${expenseType}`, e.id);
-        })
-      );
+      this.handleLocalData();
     }
+  }
+
+  public handleLocalData(month: number = new Date().getMonth()): void {
+    this.expensesService
+      .getExpensesByMonth(month)
+      .pipe(
+        tap((docs) =>
+          docs.filter((e) => {
+            if (e.type === 'expense') {
+              this.expensesData.update(() => e.data);
+              this.idExpenses.update(() => e.data.length);
+              this.localStorageService.set('idExpenses', `${this.idExpenses()}`);
+              this.localStorageService.set('expense', JSON.stringify(this.expensesData()));
+              this.localStorageService.set(`id_expense`, e.id);
+            }
+            if (e.type === 'bonus') {
+              this.bonusData.update(() => e.data);
+              this.idBonus.update(() => e.data.length);
+              this.localStorageService.set('idBonus', `${this.idBonus()}`);
+              this.localStorageService.set('bonus', JSON.stringify(this.bonusData()));
+              this.localStorageService.set(`id_bonus`, e.id);
+            }
+          })
+        )
+      )
+      .subscribe();
   }
 
   public addElement(expenses: boolean, expenseData: ExpensesFormData) {
