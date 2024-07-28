@@ -66,11 +66,27 @@ export class ExpensesService {
   public getExpensesDates(): Observable<{ id: number; date: Date }[]> {
     return this.getAllExpenses().pipe(
       map((docs) => {
-        const dates = docs.map((e) => e.createdAt);
-        return dates.flatMap((d, id) => {
-          return { id, date: d.toDate() };
-        });
-      })
+        let id = 0;
+        return docs.reduce((acc: ExpensesCollection[], cur: ExpensesCollection) => {
+          if (acc.length > 0) {
+            id += 1;
+            if (acc.at(-1)!.createdAt.toDate().getMonth() < cur.createdAt.toDate().getMonth()) {
+              acc.push(cur);
+            }
+          } else {
+            acc.push(cur)
+          }
+          return acc;
+        }, []);
+      }),
+      map((dates) => dates.map((e, id) => ({ id, date: e.createdAt.toDate() }))),
+    );
+  }
+
+  public findDateByMonth(month: string = ''): Observable<{ id: number; date: Date }[]> {
+    month = month || new Date().toLocaleDateString('pt-BR', { month: 'short' });
+    return this.getExpensesDates().pipe(
+      map((dates) => dates.filter((e) => e.date.toLocaleDateString('pt-BR', { month: 'short' }) === month))
     );
   }
 
