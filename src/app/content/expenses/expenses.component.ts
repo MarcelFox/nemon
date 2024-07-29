@@ -5,34 +5,16 @@ import { Sort, MatSortModule } from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ExpensesService } from '../../services/expenses.service';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { Timestamp } from '@angular/fire/firestore';
+import { ExpensesService } from './services/expenses.service';
+import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { first, tap } from 'rxjs';
 import {
   ExpenseTypeEnum,
   ExpenseIDEnum,
   CollectionIDEnum,
   ExpenseChangedEnum,
-} from '../../shared/enums/expenseType.enum';
-
-export interface Expenses {
-  id: number;
-  detail: string;
-  value: number;
-}
-
-export interface ExpensesFormData {
-  detail: string;
-  value: number;
-}
-
-export interface ExpensesCollection {
-  createdAt: Timestamp;
-  data: Expenses[];
-  id: string;
-  type: string;
-}
+} from './enums/expenseType.enum';
+import { Expenses, ExpensesFormData } from './interfaces/Expenses.interface';
 
 @Component({
   selector: 'app-expenses',

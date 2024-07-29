@@ -10,8 +10,8 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { Observable, from, map, first, tap } from 'rxjs';
-import { Expenses, ExpensesCollection } from '../content/expenses/expenses.component';
-import { logAtExecution } from '../shared/utils';
+import { Expenses, ExpensesCollection } from '../interfaces/Expenses.interface';
+import { logAtExecution } from '../../../../shared/utils';
 
 @Injectable({
   providedIn: 'root',
