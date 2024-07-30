@@ -60,6 +60,7 @@ export class ExpensesComponent {
     detail: new FormControl(''),
     value: new FormControl(0),
   });
+
   ngOnInit() {
     this.initExpenseData();
     this.bonusChanged = !!this.localStorageService.get(ExpenseChangedEnum.bonus);
@@ -124,6 +125,10 @@ export class ExpensesComponent {
     }
   }
 
+  /**
+   * Handle data to be saved at local storage.
+   * @param month number of month, DEFAULT: Actual month number.
+   */
   public handleLocalData(month: number = new Date().getMonth()): void {
     this.expensesService
       .getExpensesByMonth(month)
@@ -150,6 +155,11 @@ export class ExpensesComponent {
       .subscribe();
   }
 
+  /**
+   * Add a new Expense into Expenses list.
+   * @param expenses true if is type expense, false if not.
+   * @param expenseData Data to be added into the Expenses list.
+   */
   public addElement(expenses: boolean, expenseData: ExpensesFormData) {
     if (expenses) {
       this.idExpenses.update((num) => num + 1);
@@ -166,6 +176,11 @@ export class ExpensesComponent {
     }
   }
 
+  /**
+   * Remove the element be it's ID and handle local storage disposition.
+   * @param id id of the Element to be removed
+   * @param expense true if is type expense, false if not.
+   */
   public removeElement(id: number, expense: boolean = true) {
     if (expense) {
       this.expensesData.update(() => {
@@ -186,6 +201,13 @@ export class ExpensesComponent {
     }
   }
 
+  /**
+   * Delete an element by ID from the list of Expeses.
+   * @param id ID of the object in the list of elements.
+   * @param listElements List of objects.
+   * @param expense true if is type expense, false if not.
+   * @returns Updated list of Expenses.
+   */
   private deleteElementById(id: number, listElements: Expenses[], expense: boolean): Expenses[] {
     const newList = listElements.filter((e: Expenses) => e.id !== id);
     newList.forEach((e) => {
@@ -197,6 +219,11 @@ export class ExpensesComponent {
     return newList;
   }
 
+  /**
+   * Sorts the objects into the Material table.
+   * @param sort Sort from material, used to get direction.
+   * @param objectsList The objects to be sorted.
+   */
   sortData(sort: Sort, objectsList: Expenses[]) {
     objectsList.sort((a, b) => (sort.direction === 'asc' ? a.value - b.value : b.value - a.value));
   }
@@ -216,6 +243,11 @@ export class ExpensesComponent {
     this.localStorageService.set(expense, JSON.stringify(expenseData()));
   }
 
+  /**
+   * Save the objects from the table.
+   * @param expenseType 'expense' or 'bonus'
+   * @param collectionSignal WritableSignal to be used
+   */
   onSave(expenseType: string, collectionSignal: WritableSignal<Expenses[]>) {
     const idFirestoreCollection = this.localStorageService.get(`id_${expenseType}`);
     if (!idFirestoreCollection) {
