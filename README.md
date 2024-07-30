@@ -1,6 +1,8 @@
 # Nemon
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.5.
+Nemon is a project that started from the necessity of taking care of our *Ne*xt *Mon*th expenses. It's not completed yet and was also meant to be a study on Angular projects.
+
+- This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.5.
 
 ## Development server
 
