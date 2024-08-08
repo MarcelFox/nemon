@@ -8,12 +8,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesService } from './services/expenses.service';
 import { LocalStorageService } from '../../../shared/services/local-storage.service';
 import { first, tap } from 'rxjs';
-import {
-  ExpenseTypeEnum,
-  ExpenseIDEnum,
-  CollectionIDEnum,
-  ExpenseChangedEnum,
-} from './enums/expenseType.enum';
+import { ExpenseTypeEnum, ExpenseIDEnum, CollectionIDEnum, ExpenseChangedEnum } from './enums/expenseType.enum';
 import { Expenses, ExpensesFormData } from './interfaces/Expenses.interface';
 import { ExpenseListComponent } from '../../../shared/components/expense-list/expense-list.component';
 
@@ -28,7 +23,17 @@ import { ExpenseListComponent } from '../../../shared/components/expense-list/ex
     MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    ExpenseListComponent
+    ExpenseListComponent,
+  ],
+  providers: [
+    {
+      provide: 'title',
+      useValue: 'Gastos',
+    },
+    {
+      provide: 'collectionName',
+      useValue: 'expenses',
+    },
   ],
   templateUrl: './expenses.component.html',
   styleUrl: './expenses.component.css',
