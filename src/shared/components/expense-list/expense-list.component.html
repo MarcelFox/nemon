@@ -1,1 +1,49 @@
-<p>expense-list works!</p>
+<div>
+    <h2>{{title}}</h2>
+    <table matSort (matSortChange)="sortData($event, data())">
+        <tr>
+            <th mat-sort-header="detail">Nome</th>
+            <th mat-sort-header="value">Valor</th>
+        </tr>
+
+        @for (e of data(); track e.id) {
+        <tr>
+            <td>{{e.detail}}</td>
+            <td>{{e.value}}</td>
+            <button (click)="removeElement(e.id)">X</button>
+        </tr>
+        }
+        <tr class="total-amount">
+            <td>Total:</td>
+            <td>{{ totalSum() }}</td>
+        </tr>
+    </table>
+    <form [formGroup]="expensesForm" class="expenses-input-form"
+        (keydown.enter)="onAddExpense(this.expensesForm, this.data, 'expense')">
+        <tr>
+            <td>
+                <mat-form-field class="expenses-input-form" floatLabel="always">
+                    <mat-label>Item</mat-label>
+                    <input #expenseValueInputRef matInput formControlName="detail">
+                </mat-form-field>
+            </td>
+            <td>
+                <mat-form-field class="input-field" floatLabel="always">
+                    <mat-label>Valor</mat-label>
+                    <input matInput type="number" placeholder="0" class="input-amount-value" formControlName="value">
+                    <span matTextPrefix>R$&nbsp;</span>
+                </mat-form-field>
+            </td>
+        </tr>
+    </form>
+    <div>
+        <button (click)=" onAddExpense(this.expensesForm, this.data, 'expense')">
+            adicionar
+        </button>
+        <button [hidden]="!true" (click)="onSave(this.data)">
+            salvar
+        </button>
+    </div>
+    <div>
+    </div>
+</div>
