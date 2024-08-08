@@ -1,101 +1,13 @@
-table {
-  height: fit-content;
-}
-
 #container {
-  display: flex;
-  width: auto;
-  height: auto;
-  overflow: auto;
-  padding-bottom: 20px;
+    display: flex;
 }
 
-#vertical-line-table {
-  height: inherit;
-  border: 1px solid coral;
+#expense-details {
+    width: 50%;
+    height: inherit;
+    border-right: 2px solid orange;
 }
 
-#expenses-table,
-#bonus-table {
-  width: 100%;
-}
-
-h2 {
-  text-align: center;
-  font-size: xx-large;
-  font-weight: bold;
-  margin-bottom: 0;
-  border-bottom: 2px solid coral;
-}
-
-tr.mat-mdc-footer-row {
-  font-weight: bold;
-}
-
-#month-tabs {
-  display: flex;
-  width: 100%;
-  margin-top: 1px;
-  border-bottom: 1px solid #ccc;
-}
-
-ul.tabs {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-}
-
-ul.tabs .tab {
-  padding: 3px 10px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-bottom: none;
-  background: #d9d9d9;
-  margin-right: 5px;
-  border-radius: 5px 5px 0 0;
-  transition: background 0.3s ease;
-}
-
-ul.tabs .tab:hover {
-  background: #ddd;
-}
-
-ul.tabs .tab.active {
-  background: #fff;
-  font-weight: bolder;
-  border-bottom: 1px solid #fff;
-}
-
-ul.tabs .tab:not(.active):hover {
-  background: #fff;
-}
-
-.mat-mdc-table-sticky {
-  border-top: 1px solid #c4c6d0;
-  border-bottom: 1px solid #c4c6d0;
-}
-
-.expenses-input-form {
-  width: 200px;
-  margin-top: 10px;
-  background-color: transparent;
-}
-
-.input-amount-value {
-  text-align: right;
-}
-
-input.input-amount-value {
-  -moz-appearance: textfield;
-}
-
-.mat-sort {
-  width: 100%;
-}
-
-.total-amount td {
-  padding-top: 20px;
-  font-weight: bold;
-  text-align: left;
+#expense-list {
+    width: 50%;
 }

@@ -1,0 +1,63 @@
+#container {
+    width: auto;
+    height: auto;
+    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+input.input-amount-value {
+    -moz-appearance: textfield;
+}
+
+#month-tabs {
+    display: flex;
+    width: 100%;
+    margin-top: 1px;
+    border-bottom: 1px solid #ccc;
+}
+
+ul.tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+ul.tabs .tab {
+    padding: 3px 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    background: #d9d9d9;
+    margin-right: 5px;
+    border-radius: 5px 5px 0 0;
+    transition: background 0.3s ease;
+}
+
+ul.tabs .tab:hover {
+    background: #ddd;
+}
+
+ul.tabs .tab.active {
+    background: #fff;
+    font-weight: bolder;
+    border-bottom: 1px solid #fff;
+}
+
+ul.tabs .tab:not(.active):hover {
+    background: #fff;
+}
+
+table {
+    height: fit-content;
+}
+
+button {
+    float: right;
+}
+
+h5 {
+    text-align: center;
+    font-weight: 500;
+}
