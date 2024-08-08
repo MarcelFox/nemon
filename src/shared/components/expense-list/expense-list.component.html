@@ -10,7 +10,7 @@
         <tr>
             <td>{{e.detail}}</td>
             <td>{{e.value}}</td>
-            <button (click)="removeElement(e.id)">X</button>
+            <button (click)="removeExpense(e.id)">X</button>
         </tr>
         }
         <tr class="total-amount">
@@ -19,7 +19,7 @@
         </tr>
     </table>
     <form [formGroup]="expensesForm" class="expenses-input-form"
-        (keydown.enter)="onAddExpense(this.expensesForm, this.data, 'expense')">
+        (keydown.enter)="addExpense()">
         <tr>
             <td>
                 <mat-form-field class="expenses-input-form" floatLabel="always">
@@ -37,10 +37,10 @@
         </tr>
     </form>
     <div>
-        <button (click)=" onAddExpense(this.expensesForm, this.data, 'expense')">
+        <button (click)=" addExpense()">
             adicionar
         </button>
-        <button [hidden]="!true" (click)="onSave(this.data)">
+        <button [hidden]="!formChanged" (click)="saveExpense(this.data)">
             salvar
         </button>
     </div>
