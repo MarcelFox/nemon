@@ -7,8 +7,8 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  Firestore,
 } from '@angular/fire/firestore';
-import { Firestore } from '@firebase/firestore';
 import { Observable, first, from, map } from 'rxjs';
 
 /**
@@ -19,9 +19,7 @@ import { Observable, first, from, map } from 'rxjs';
   providedIn: 'root',
 })
 export class FirestoreService<Type> {
-  constructor(@Inject('COLLECTION_NAME') private collectionName: string) {
-    this.collectionName = collectionName;
-  }
+  constructor(@Inject('collectionName') private collectionName: string) {}
 
   private firestore = inject(Firestore);
   private collectionRef = collection(this.firestore, this.collectionName);
