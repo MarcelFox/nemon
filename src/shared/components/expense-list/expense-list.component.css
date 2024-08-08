@@ -1,11 +1,9 @@
 #container {
     width: auto;
     height: auto;
-    /* padding-bottom: 20px; */
-    /* background-color: red; */
+    padding-bottom: 10px;
     display: flex;
     flex-direction: column;
-    /* border: 1px gray solid; */
 }
 
 input.input-amount-value {
@@ -59,7 +57,7 @@ button {
     float: right;
 }
 
-h2 {
+h5 {
     text-align: center;
     font-weight: 500;
 }
