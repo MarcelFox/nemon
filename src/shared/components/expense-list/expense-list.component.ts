@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FirestoreService } from '../../services/firestore.service';
 import { ExpensesCollection } from '../../../app/content/expenses/interfaces/Expenses.interface';
+import { first, tap } from 'rxjs';
 
 @Component({
   selector: 'app-expense-list',
@@ -22,6 +23,15 @@ import { ExpensesCollection } from '../../../app/content/expenses/interfaces/Exp
 export class ExpenseListComponent implements OnInit {
   constructor(@Inject('expensesService') private expensesService: FirestoreService<ExpensesCollection>) {}
   ngOnInit(): void {
-    console.log(this.expensesService.collection$);
+    this.expensesService
+      .getByKeyValue('type', 'expense')
+      .pipe(tap((e) => console.log(e)))
+      .pipe(first())
+      .subscribe();
+    this.expensesService
+      .getByKeyValue('type', 'bonus')
+      .pipe(tap((e) => console.log(e)))
+      .pipe(first())
+      .subscribe();
   }
 }
