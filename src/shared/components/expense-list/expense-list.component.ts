@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, inject } from '@angular/core';
 import { FirestoreService } from '../../services/firestore.service';
 import { ExpensesCollection } from '../../../app/content/expenses/interfaces/Expenses.interface';
 
@@ -10,14 +10,18 @@ import { ExpensesCollection } from '../../../app/content/expenses/interfaces/Exp
   styleUrl: './expense-list.component.css',
   providers: [
     {
-      provide: 'firestore',
-      useFactory: () => new FirestoreService<ExpensesCollection>('expenses'),
+      provide: 'expensesService',
+      useClass: FirestoreService<ExpensesCollection>,
+    },
+    {
+      provide: 'collectionName',
+      useValue: 'expenses',
     },
   ],
 })
 export class ExpenseListComponent implements OnInit {
-  constructor(private firestore: FirestoreService<ExpensesCollection>) {}
+  constructor(@Inject('expensesService') private expensesService: FirestoreService<ExpensesCollection>) {}
   ngOnInit(): void {
-    console.log(this.firestore.getAll());
+    console.log(this.expensesService.collection$);
   }
 }
