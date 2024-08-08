@@ -15,6 +15,7 @@ import {
   ExpenseChangedEnum,
 } from './enums/expenseType.enum';
 import { Expenses, ExpensesFormData } from './interfaces/Expenses.interface';
+import { ExpenseListComponent } from '../../../shared/components/expense-list/expense-list.component';
 
 @Component({
   selector: 'app-expenses',
@@ -27,6 +28,7 @@ import { Expenses, ExpensesFormData } from './interfaces/Expenses.interface';
     MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
+    ExpenseListComponent
   ],
   templateUrl: './expenses.component.html',
   styleUrl: './expenses.component.css',
