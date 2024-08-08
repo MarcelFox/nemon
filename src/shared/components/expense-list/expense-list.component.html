@@ -1,4 +1,12 @@
-<div>
+<div id="container">
+    <div [hidden]="hideMonthsTab" id="month-tabs">
+        <ul class="tabs">
+          @for (e of months(); track e.id) {
+          <li (click)="onMonthClick(e)" [ngClass]="{'tab': true, 'active': (e.id === activeMonthId())}">{{e.date | date:
+            'MMM'}}</li>
+          }
+        </ul>
+      </div> 
     <h2>{{title}}</h2>
     <table matSort (matSortChange)="sortData($event, data())">
         <tr>
@@ -40,7 +48,7 @@
         <button (click)=" addExpense()">
             adicionar
         </button>
-        <button [hidden]="!formChanged" (click)="saveExpense(this.data)">
+        <button [hidden]="!formChanged" (click)="saveExpense()">
             salvar
         </button>
     </div>
