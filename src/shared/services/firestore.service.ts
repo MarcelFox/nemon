@@ -42,13 +42,8 @@ export class FirestoreService<Type> implements Repository<Type> {
     return from(addDoc(this.collectionRef, { ...data, createdAt: new Date() }).then((reponse) => reponse.id));
   }
 
-  public update(docId: string, data: Type[]): void {
-    // TODO: Consider  transaction instead of first() pipe operator.
-    this.getById(docId)
-      .pipe(first())
-      .subscribe((doc) => {
-        doc.filter((e) => from(updateDoc(this.getDocRef(docId), { ...e, data })));
-      });
+  public update(docId: string, data: { [x: string]: any; }): void {
+    from(updateDoc(this.getDocRef(docId), {...data}));
   }
 
   public delete(docId: string): Observable<void> {
