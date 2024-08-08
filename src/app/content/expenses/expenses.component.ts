@@ -7,8 +7,8 @@ import { ExpenseListComponent } from '../../../shared/components/expense-list/ex
   imports: [ExpenseListComponent],
   providers: [
     {
-      provide: 'title',
-      useValue: 'Gastos',
+      provide: 'expenseListTitle',
+      useValue: 'Gastos Mensais',
     },
     {
       provide: 'collectionName',

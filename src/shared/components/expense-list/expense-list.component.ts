@@ -45,7 +45,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 export class ExpenseListComponent implements OnInit {
   constructor(
     @Inject('expensesService') private expensesService: FirestoreService<ExpensesCollection>,
-    @Inject('title') public title: string
+    @Inject('expenseListTitle') public title: string
   ) {}
 
   // TODO: Remove type from ExpensesCollection to rely only on collection itself.
