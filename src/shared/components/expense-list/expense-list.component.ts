@@ -44,19 +44,29 @@ export class ExpenseListComponent implements OnInit {
 
   // TODO: Remove type from ExpensesCollection to rely only on collection itself.
   ngOnInit(): void {
-    console.log(this.storageService.get('expenses'));
     this.expensesService
       .getAll()
       .pipe(
         tap((collection) => {
+          collection = collection.filter((doc) => {
+            this.collectionData.update(() => [doc]);
+            return doc.createdAt.toDate().getMonth() === this.expenseDate.getMonth();
+          });
           const docs = collection.flatMap((e) => e.data);
           this.data.update(() => docs);
+          this.lastId.update(() => docs.length);
         })
       )
       .subscribe();
   }
 
+  @Input({ required: false }) expenseDate: Date = new Date();
+
   data: WritableSignal<Expenses[]> = signal([]);
+  lastId: WritableSignal<number> = signal(0);
+  collectionData: WritableSignal<ExpensesCollection[]> = signal([]);
+  collectionId: string = '';
+  formChanged: boolean = false;
 
   expensesForm = new FormGroup({
     detail: new FormControl(''),
@@ -80,15 +90,28 @@ export class ExpenseListComponent implements OnInit {
     objectsList.sort((a, b) => (sort.direction === 'asc' ? a.value - b.value : b.value - a.value));
   }
 
-  removeElement(elementId: number): void {
-    console.log(`REMOVING: ${elementId}`);
+  removeExpense(elementId: number): void {
+    this.data().filter((e) => e.id === elementId);
+    const newList = this.data().filter((e: Expenses) => e.id !== elementId);
+    newList.forEach((e) => {
+      if (e.id >= elementId) {
+        e.id = e.id - 1;
+      }
+    });
+    this.data.update(() => newList);
+    this.formChanged = true;
   }
 
-  onAddExpense(formGroupData: FormGroup, expenseData: WritableSignal<Expenses[]>, expense: string) {
-    console.log('lol');
+  addExpense() {
+    this.lastId.update(() => this.lastId() + 1);
+    this.data.update(() => [...this.data(), { ...(this.expensesForm.value as Expenses), id: this.lastId() }]);
+    this.formChanged = true;
   }
 
-  onSave(expenseData: WritableSignal<Expenses[]>) {
-    console.log(`SAVING: ${expenseData}`);
+  saveExpense(expensesData: WritableSignal<Expenses[]>) {
+    if (this.collectionData().length > 0) {
+      this.expensesService.update(this.collectionData()[0].id, { data: expensesData() });
+      this.formChanged = false;
+    }
   }
 }
