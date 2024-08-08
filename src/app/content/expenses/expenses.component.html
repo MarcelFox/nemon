@@ -1,4 +1,5 @@
 <div id="month-tabs">
+  <app-expense-list></app-expense-list>
   <ul class="tabs">
     @for (e of months(); track e.id) {
     <li (click)="onMonthClick(e)" [ngClass]="{'tab': true, 'active': (e.id === activeMonthId())}">{{e.date | date:
