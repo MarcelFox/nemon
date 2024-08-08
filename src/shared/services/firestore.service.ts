@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import {
   DocumentReference,
   addDoc,
@@ -15,8 +15,11 @@ import { Observable, first, from, map } from 'rxjs';
  * FirestoreService Class.
  * @param collectionName Name of the collection.
  */
+@Injectable({
+  providedIn: 'root',
+})
 export class FirestoreService<Type> {
-  constructor(private collectionName: string) {
+  constructor(@Inject('COLLECTION_NAME') private collectionName: string) {
     this.collectionName = collectionName;
   }
 
