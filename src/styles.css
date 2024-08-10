@@ -1,6 +1,6 @@
 :root {
     --grid-gap: 15px;
-    --global-border-radius: 10px;
+    --global-border-radius: 5px;
     --global-x-margin: 80px;
     --global-top-margin: 30px;
     --header-margin: 25px;
@@ -51,9 +51,7 @@ a {
 #footer {
     color: darkblue;
     background-color: blanchedalmond;
-    box-shadow: 0px 2px 5px grey;
     border-radius: var(--global-border-radius);
-    border: 1px solid white;
 }
 
 #sidebar,
