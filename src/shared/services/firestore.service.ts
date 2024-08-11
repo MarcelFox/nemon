@@ -56,6 +56,6 @@ export class FirestoreService<Type> implements Repository<Type> {
    * @returns DocumentReference
    */
   private getDocRef(id: string): DocumentReference {
-    return doc(this.firestore, `expenses/${id}`);
+    return doc(this.firestore, `${this.collectionName}/${id}`);
   }
 }
