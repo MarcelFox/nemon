@@ -30,13 +30,13 @@
         (keydown.enter)="addExpense()">
         <tr>
             <td>
-                <mat-form-field class="expenses-input-form" floatLabel="always">
+                <mat-form-field class="expenses-input-form" floatLabel="always" appearance="outline">
                     <mat-label>Item</mat-label>
                     <input #expenseValueInputRef matInput formControlName="detail">
                 </mat-form-field>
             </td>
             <td>
-                <mat-form-field class="input-field" floatLabel="always">
+                <mat-form-field class="input-field" floatLabel="always" appearance="outline">
                     <mat-label>Valor</mat-label>
                     <input matInput type="number" placeholder="0" class="input-amount-value" formControlName="value">
                     <span matTextPrefix>R$&nbsp;</span>
