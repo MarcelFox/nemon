@@ -1,0 +1,23 @@
+#content {
+    display: flex;
+    flex-direction: row;
+}
+
+#left-content,
+#right-content {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    background-color: var(--mat-app-background-color);
+    height: auto;
+    padding: 15px;
+    /* border-radius: 5px; */
+}
+
+#left-content {
+    width: 60%;
+}
+
+#right-content {
+    width: 40%;
+}

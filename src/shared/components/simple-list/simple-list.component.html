@@ -1,0 +1,58 @@
+<div id="incomes">
+    <h5 id="table-title">{{title}}
+        <button mat-mini-fab style="box-shadow: none; border: none; float: right" (click)="editionMode=!editionMode" title="editar valores">
+            <mat-icon aria-hidden="false"
+                aria-label="Example home icon" fontIcon="edit"></mat-icon>
+        </button>
+    </h5>
+    <table id="income-table" mat-table [dataSource]="dataSource()"
+        class="mat-elevation-z8 demo-table">
+        <ng-container matColumnDef="detail">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let element">{{element.detail}}</td>
+            <td id="income-total-label" mat-footer-cell *matFooterCellDef> Total </td>
+        </ng-container>
+        <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>Valor</th>
+            <td mat-cell *matCellDef="let element">R$ {{element.value}}</td>
+            <td id="income-total" mat-footer-cell *matFooterCellDef>R$ {{totalSum()}}</td>
+        </ng-container>
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+                <button *ngIf="editionMode" (click)="onDelete(element.id)" title="remover" mat-mini-fab
+                    style="box-shadow: none; background-color: transparent;">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </td>
+            <td id="income-total" mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+    </table>
+    <div *ngIf="editionMode" id="income-input">
+        <div style="display: flex; flex-direction: row;">
+            <mat-form-field class="income-input-name" appearance="outline" floatLabel="always">
+                <mat-label>Nome</mat-label>
+                <input matInput type="text" [(ngModel)]="incomeInputName">
+            </mat-form-field>
+            <mat-form-field class="income-input-value" appearance="outline" floatLabel="always">
+                <mat-label>Valor</mat-label>
+                <span matTextPrefix>R$</span>
+                <input placeholder="0" id="income-value" matInput type="number"
+                    [(ngModel)]="incomeInputValue">
+            </mat-form-field>
+        </div>
+        <div class="input-buttons">
+            <button [disabled]="!incomeInputName || !incomeInputValue" style="width: 100px;" mat-fab
+                [hidden]="false" (click)="onAdd()">
+                <mat-icon fontIcon="add"></mat-icon>adicionar
+            </button>
+            <button [disabled]="!dataChanged()" style="width: 100px;" mat-fab [hidden]="false"
+                (click)="onSave()">
+                <mat-icon fontIcon="check"></mat-icon>salvar
+            </button>
+        </div>
+    </div>
+</div>
