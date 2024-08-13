@@ -1,6 +1,8 @@
 #container {
     display: flex;
     flex-direction: column;
+    background-color: #fad99d;
+    border-radius: 5px;
 }
 
 #content {
@@ -8,17 +10,34 @@
     flex-direction: row;
 }
 
+#title {
+    padding-left: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: aliceblue;
+    border-bottom: 1px solid orange;
+}
+
 #left-content,
 #right-content {
-    background-color: var(--mat-app-background-color);
     display: flex;
     flex-direction: column;
     padding: 5px;
-    width: 50%;
+    background-color: var(--mat-app-background-color);
     height: auto;
+    padding: 15px;
+    /* border-radius: 5px; */
 }
 
-#title, #table-title  {
+#left-content {
+    width: 60%;
+}
+
+#right-content {
+    width: 40%;
+}
+
+#table-title  {
     text-align: center;
 }
 
