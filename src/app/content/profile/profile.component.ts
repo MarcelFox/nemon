@@ -5,9 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
 import { FirestoreService } from '../../../shared/services/firestore.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { first, tap } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 interface BonusCollectionInterface {
   id: string;
@@ -18,7 +20,16 @@ interface BonusCollectionInterface {
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, MatTableModule],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatTabsModule,
+  ],
   providers: [
     {
       provide: 'bonusStore',
@@ -50,6 +61,7 @@ export class ProfileComponent implements OnInit {
   incomeInputName: string = '';
   incomeInputValue: number | null = null;
   disableSaveBtn: boolean = false;
+  editionMode: boolean = false;
 
   dataChanged = computed((): boolean => {
     return this.dataSource().at(-1) !== this.incomesData().at(-1);
